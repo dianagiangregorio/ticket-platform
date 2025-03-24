@@ -23,13 +23,22 @@
                 <form class="row g-3" id="ticket-form" th:object="${ticket}" th:action="@{/tickets/create}"
                     method="post">
                     <div class="col-mb-3">
-                        <label for="titolo" class="form-label">Titolo:</label>
+                        <label for="dataCreazione">Data creazione:</label>
+                        <input type="datetime-local" id="dataCreazione" name="dataCreazione" th:field="*{dataCreazione}">
+                        <div th:if="${#fields.hasErrors('titolo')}" class="invalid-feedback">
+                            <ul>
+                                <li th:each="error : ${#fields.errors('titolo')}" th:text="${error}" />
+                            </ul>
+                        </div>
+                        <div>
+                            <label for="titolo" class="form-label">Titolo:</label>
                         <input class="form-control" type="text" name="titolo" id="titolo" th:field="*{titolo}"
                             th:errorClass="is-invalid">
                         <div th:if="${#fields.hasErrors('titolo')}" class="invalid-feedback">
                             <ul>
                                 <li th:each="error : ${#fields.errors('titolo')}" th:text="${error}" />
                             </ul>
+                        </div>
                         </div>
                         <div class="col-md-12">
                             <label for="contenuto" class="form-label">Contenuto:</label>
@@ -40,12 +49,28 @@
                                     <li th:each="error : ${#fields.errors('contenuto')}" th:text="${error}" />
                                 </ul>
                             </div>
+                            <label for="stato" class="form-label">Stato</label>
+                            <select id="stato" name="stato" class="form-select" required>
+                                <option selected>Seleziona lo stato del ticket</option>
+                                <option value="Da fare">Da fare</option>
+                                <option value="In corso">In corso</option>
+                                <option value="Completato">Completato</option>
+                              </select>
                             <div class="col-md-4">
                                 <label for="operatore" class="form-label">Operatore</label>
                                 <select id="operatore" name="operatoreId" class="form-select">
                                     <option selected>Seleziona</option>
                                     <th:block th:each="operatore : ${operatori}">
                                         <option th:value="${operatore.id}" th:text="${operatore.nome}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="categoria" class="form-label">Categoria</label>
+                                <select id="categoria" name="categoriaId" class="form-select">
+                                    <option selected>Seleziona</option>
+                                    <th:block th:each="categoria : ${categorie}">
+                                        <option th:value="${categoria.id}" th:text="${categoria.nome}"></option>
                                     </th:block>
                                 </select>
                             </div>

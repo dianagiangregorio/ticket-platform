@@ -40,6 +40,18 @@ public class Ticket {
     @JoinColumn(name="operatore_id", nullable=false)
     private Operatore operatore;
 
+    @ManyToOne
+    @JoinColumn (name = "categoria_id", nullable =false)
+    private Categoria categoria;
+
+    public Categoria getCategoria() {
+        return this.categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
     public Operatore getOperatore() {
         return this.operatore;
     }

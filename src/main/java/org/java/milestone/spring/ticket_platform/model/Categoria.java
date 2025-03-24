@@ -1,9 +1,12 @@
 package org.java.milestone.spring.ticket_platform.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
@@ -17,6 +20,17 @@ public class Categoria {
 
     @NotBlank (message = "il nome è obbligatorio")
     private String nome;
+
+    @OneToMany (mappedBy = "categoria")
+    private List<Ticket> tickets;
+
+    public List<Ticket> getTickets() {
+        return this.tickets;
+    }
+
+    public void setTickets(List<Ticket> tickets) {
+        this.tickets = tickets;
+    }
 
 
     public Integer getId() {

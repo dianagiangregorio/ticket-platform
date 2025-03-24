@@ -9,7 +9,23 @@
 
 <body>
     <header class="container">
-        <nav th:replace="~{fragments/navbar :: navbar('Pizze')}"></nav>
+        <nav th:replace="~{fragments/navbar :: navbar('Tickets')}"></nav>
     </header>
+    <main class="container">
+        <section class="row">
+            <div class="card" th:object="${ticket}">
+                <h5 class="card-header">Dettaglio ticket</h5>
+                <div class="card-body">
+                    <h5 class="card-title" th:text="*{titolo}">Titolo ticket</h5>
+                    <p class="card-text">Contenuto ticket: [[*{contenuto}]]</p>
+                    <p class="card-text badge bg-info">Stato: [[*{stato}]]</p>
+                    <p class="card-text">Categoria: [[*{Categoria.nome}]]</p>
+                    <p class="card-text">Assegnato a: [[*{operatore.nome}]]</p>
+                    <a href="#" class="btn btn-primary">Torna ai ticket</a>
+                </div>
+            </div>
+        </section>
+    </main>
 </body>
+
 </html>

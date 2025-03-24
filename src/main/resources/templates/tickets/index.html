@@ -29,6 +29,7 @@
                     <th scope="col">Id</th>
                     <th scope="col">Titolo</th>
                     <th scope="col">Stato</th>
+                    <th scope="col">Operatore</th>
                     <th scope="col">Dettagli</th>
                   </tr>
                 </thead>
@@ -37,8 +38,11 @@
                     <td th:text = "${ticket.id}"></td>
                     <td th:text = "${ticket.titolo}"></td>
                     <td th:text = "${ticket.stato}"></td>
+                    <td th:text = "${ticket.operatore}"></td>
                     <td>
                         <a th:href="@{/tickets/{id}(id=${ticket.id})}" class="btn btn-primary">Dettagli</a>
+                        <a th:href="@{/tickets/edit/{id}(id=${ticket.id})}" class="btn btn-warning">Modifica</a>
+                        <a th:href="@{/tickets/delete/{id}(id=${ticket.id})}" class="btn btn-danger">Elimina</a>
                     </td>
                   </tr>
         </section>
