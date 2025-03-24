@@ -1,0 +1,3 @@
+INSERT INTO categorie (id, nome) VALUES (1, 'Software'),(2, 'Hardware'),(3, 'Networking');
+
+INSERT INTO operatori (id, nome, cognome, email, password) VALUES (1, 'Mario', 'Rossi', 'mario.rossi@email.com', 'password123'),(2, 'Luca', 'Bianchi', 'luca.bianchi@email.com', 'password123'),(3, 'Giovanni', 'Verdi', 'giovanni.verdi@email.com', 'password123'), (4, 'Elena', 'Neri', 'elena.neri@email.com', 'password123'),(5, 'Francesca', 'Blu', 'francesca.blu@email.com', 'password123');

@@ -6,7 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -32,8 +34,19 @@ public class Ticket {
     @NotNull (message = "la data è obbligatoria")
     private LocalDateTime dataCreazione;
 
-
     private LocalDateTime dataModifica;
+
+    @ManyToOne
+    @JoinColumn(name="operatore_id", nullable=false)
+    private Operatore operatore;
+
+    public Operatore getOperatore() {
+        return this.operatore;
+    }
+
+    public void setOperatore(Operatore operatore) {
+        this.operatore = operatore;
+    }
 
     public Integer getId() {
         return this.id;

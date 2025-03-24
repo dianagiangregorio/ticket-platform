@@ -30,6 +30,17 @@ public class Operatore {
     @NotBlank (message = "la password non può essere vuota")
     private String password;  
 
+    @OneToMany (mappedBy = "operatore")
+    private List<Ticket> tickets;
+
+    public List<Ticket> getTickets() {
+        return this.tickets;
+    }
+
+    public void setTickets(List<Ticket> tickets) {
+        this.tickets = tickets;
+    }
+
     public Integer getId() {
         return this.id;
     }

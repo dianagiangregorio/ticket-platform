@@ -41,22 +41,24 @@
                                 </ul>
                             </div>
                             <div class="col-md-4">
-                                <label for="inputState" class="form-label">Operatore</label>
-                                <select id="inputState" class="form-select">
+                                <label for="operatore" class="form-label">Operatore</label>
+                                <select id="operatore" name="operatoreId" class="form-select">
                                     <option selected>Seleziona</option>
-                                    <option>...</option>
+                                    <th:block th:each="operatore : ${operatori}">
+                                        <option th:value="${operatore.id}" th:text="${operatore.nome}"></option>
+                                    </th:block>
                                 </select>
                             </div>
                             <div class="col-12">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="gridCheck">
                                     <label class="form-check-label" for="gridCheck">
-                                        Check me out
+                                        Chiuso
                                     </label>
                                 </div>
                             </div>
                             <div class="col-12">
-                                <button type="submit" class="btn btn-primary">Sign in</button>
+                                <button type="submit" class="btn btn-primary">Crea ticket</button>
                             </div>
                 </form>
         </section>

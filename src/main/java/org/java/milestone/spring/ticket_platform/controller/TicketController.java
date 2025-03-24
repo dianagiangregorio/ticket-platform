@@ -1,8 +1,11 @@
 package org.java.milestone.spring.ticket_platform.controller;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.java.milestone.spring.ticket_platform.model.Operatore;
 import org.java.milestone.spring.ticket_platform.model.Ticket;
+import org.java.milestone.spring.ticket_platform.repository.OperatoreRepository;
 import org.java.milestone.spring.ticket_platform.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +26,9 @@ public class TicketController {
 
     @Autowired
     private TicketRepository ticketRepository;
+
+    @Autowired
+    private OperatoreRepository operatoreRepository;
     
     @GetMapping
     public String index(Model model){
@@ -46,14 +52,20 @@ public class TicketController {
     @GetMapping("/create")
         public String create (Model model){
         model.addAttribute("ticket", new Ticket());
+        model.addAttribute("operatori", operatoreRepository.findAll());
         return "tickets/create";
     }
 
     @PostMapping("/create")
-        public String store(@Valid @ModelAttribute("ticket") Ticket formTicket, BindingResult bindingResult, Model model){
+        public String store(@Valid @ModelAttribute("ticket") Ticket formTicket, @RequestParam("operatoreId") Integer operatoreId, BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors()){
-        return "tickets/create";
+            model.addAttribute("operatori", operatoreRepository.findAll());
+            return "tickets/create";
         }
+        Operatore operatore = operatoreRepository.findById(operatoreId).get();
+        
+        formTicket.setOperatore(operatore);
+
         ticketRepository.save(formTicket);
         return "redirect:/tickets";
     }
