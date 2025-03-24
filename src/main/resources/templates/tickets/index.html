@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:replace="~{ fragments/fragments :: head}"></div>
+    <title>Tickets</title>
+</head>
+
+
+<body>
+    <header class="container">
+        <nav th:replace="~{fragments/navbar :: navbar('Tickets')}"></nav>
+    </header>
+
+    <main class="container">
+        <section class="row">
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Titolo</th>
+                    <th scope="col">Stato</th>
+                    <th scope="col">Dettagli</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="ticket :${tickets}">
+                    <td th:text = "${ticket.id}"></td>
+                    <td th:text = "${ticket.titolo}"></td>
+                    <td th:text = "${ticket.stato}"></td>
+                    <td>
+                        <a th:href="@{/tickets/{id}(id=${ticket.id})}" class="btn btn-primary">Dettagli</a>
+                    </td>
+                  </tr>
+        </section>
+    </main>
+</body>
+</html>
