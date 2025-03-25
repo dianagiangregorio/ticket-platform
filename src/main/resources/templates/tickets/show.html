@@ -21,7 +21,24 @@
                     <p class="card-text badge bg-info">Stato: [[*{stato}]]</p>
                     <p class="card-text">Categoria: [[*{Categoria.nome}]]</p>
                     <p class="card-text">Assegnato a: [[*{operatore.nome}]]</p>
-                    <a href="#" class="btn btn-primary">Torna ai ticket</a>
+                    <h5 class="card-title">Note</h5>
+                    <div th:if="${#lists.isEmpty(ticket.note)}">
+                        <p>Non ci sono note per questo ticket</p>
+                    </div>
+                    <div th:unless="${#lists.isEmpty(ticket.note)}">
+                        <ul>
+                            <li th:each="note : ${ticket.note}">
+                                <p th:text="${note.dataCreazione} + ${note.contenuto}"></p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <form th:action="@{/tickets/{ticketId}/add-nota(id=${ticket.id})}" method="post">
+                            <textarea name="contenuto" id="contenuto" placeholder="Aggiungi una nota..."></textarea>
+                            <button type="submit">Aggiungi nota</button>
+                        </form>
+                    </div>
+                    <a th:href="@{/tickets}" class="btn btn-primary">Torna ai ticket</a>
                 </div>
             </div>
         </section>

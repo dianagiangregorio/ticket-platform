@@ -55,16 +55,16 @@
                             <label for="stato" class="form-label">Stato</label>
                             <select id="stato" name="stato" class="form-select" th:field="*{stato}" required>
                                 <option value="">Seleziona lo stato del ticket</option>
-                                <option value="Da fare">Da fare</option>
-                                <option value="In corso">In corso</option>
-                                <option value="Completato">Completato</option>
+                                <option value="Da fare" th:selected="*{stato == 'Da fare'}">Da fare</option>
+                                <option value="In corso" th:selected="*{stato == 'In corso'}">In corso</option>
+                                <option value="Completato" th:selected="*{stato == 'Completato'}">Completato</option>
                             </select>
                             <div class="col-md-4">
                                 <label for="operatore" class="form-label">Operatore</label>
                                 <select id="operatore" name="operatoreId" class="form-select" required>
                                     <option value="">Seleziona un operatore</option>
                                     <option th:each="operatore : ${operatori}" th:value="${operatore.id}"
-                                        th:text="${operatore.nome}"></option>
+                                        th:text="${operatore.nome}" th:selected="${ticket.operatore != null && ticket.operatore.id == operatore.id}"></option>
                                 </select>
                             </div>
                             <div class="col-md-4">
@@ -72,8 +72,14 @@
                                 <select id="categoria" name="categoriaId" class="form-select" required>
                                     <option value="">Seleziona una categoria</option>
                                     <option th:each="categoria : ${categorie}" th:value="${categoria.id}"
-                                        th:text="${categoria.nome}"></option>
+                                        th:text="${categoria.nome}" th:selected="${ticket.categoria != null && ticket.categoria.id == categoria.id}"></option>
                                 </select>
+                            </div>
+                            <div class="col-md-4">
+                                <form th:action="@{/tickets/add-nota/{id}(id=${ticket.id})}" method="post">
+                                    <textarea name="contenuto" id="contenuto" placeholder="Aggiungi una nota..."></textarea>
+                                    <button type="submit">Aggiungi nota</button>
+                                </form>
                             </div>
                             <div class="col-12">
                                 <div class="form-check">

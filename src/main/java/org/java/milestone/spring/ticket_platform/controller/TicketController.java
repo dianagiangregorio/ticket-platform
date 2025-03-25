@@ -1,16 +1,15 @@
 package org.java.milestone.spring.ticket_platform.controller;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.java.milestone.spring.ticket_platform.model.Categoria;
 import org.java.milestone.spring.ticket_platform.model.Operatore;
 import org.java.milestone.spring.ticket_platform.model.Ticket;
 import org.java.milestone.spring.ticket_platform.repository.CategoriaRepository;
 import org.java.milestone.spring.ticket_platform.repository.OperatoreRepository;
-import org.java.milestone.spring.ticket_platform.repository.TicketRepository;
+import org.java.milestone.spring.ticket_platform.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
@@ -30,7 +28,7 @@ import jakarta.validation.Valid;
 public class TicketController {
 
     @Autowired
-    private TicketRepository ticketRepository;
+    private TicketService ticketService;
 
     @Autowired
     private OperatoreRepository operatoreRepository;
@@ -40,24 +38,24 @@ public class TicketController {
 
     @GetMapping
     public String index(Model model) {
-        List<Ticket> tickets = ticketRepository.findAll();
+        List<Ticket> tickets = ticketService.getAllTickets();
         model.addAttribute("tickets", tickets);
         return "tickets/index";
     }
 
     @GetMapping("/{id}")
     public String show(@PathVariable Integer id, Model model) {
-        Optional<Ticket> ticket = ticketRepository.findById(id);
-        if (ticket.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket non trovato");
+        Ticket ticket = ticketService.getTicketById(id);
+        if (ticket.getNote() == null) {
+            ticket.setNote(new ArrayList<>());            
         }
-        model.addAttribute("ticket", ticket.get());
+        model.addAttribute("ticket", ticket);
         return "tickets/show";
     }
 
     @GetMapping("/search")
     public String findByKeyword(@RequestParam(name = "query") String query, Model model) {
-        List<Ticket> tickets = ticketRepository.findByTitoloContaining(query);
+        List<Ticket> tickets = ticketService.searchTicketByTitle(query);
         model.addAttribute("tickets", tickets);
         return "tickets/index";
     }
@@ -90,13 +88,13 @@ public class TicketController {
             throw new IllegalArgumentException("La categoria non può essere vuota");
         }
 
-        ticketRepository.save(formTicket);
+        ticketService.createTicket(formTicket);
         return "redirect:/tickets";
     }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
-        model.addAttribute("ticket", ticketRepository.findById(id).get());
+        model.addAttribute("ticket", ticketService.getTicketById(id));
         model.addAttribute("create", false);
         model.addAttribute("operatori", operatoreRepository.findAll());
         model.addAttribute("categorie", categoriaRepository.findAll());
@@ -110,7 +108,7 @@ public class TicketController {
             model.addAttribute("categorie", categoriaRepository.findAll());
             return "tickets/create-or-edit";
         }
-        Ticket editTicket = ticketRepository.findById(id).get();
+        Ticket editTicket = ticketService.getTicketById(id);
         Operatore operatore = operatoreRepository.findById(operatoreId).get();
         Categoria categoria = categoriaRepository.findById(categoriaId).get();
 
@@ -120,18 +118,24 @@ public class TicketController {
         editTicket.setContenuto(formTicket.getContenuto());
         editTicket.setStato(formTicket.getStato());;
 
-        ticketRepository.save(editTicket);
+        ticketService.editTicket(editTicket);
         return "redirect:/tickets";
     }
 
     @PostMapping("delete/{id}")
     public String delete(@PathVariable Integer id, RedirectAttributes redirectAttributes){
-        Ticket ticket = ticketRepository.findById(id).get();
+        Ticket ticket = ticketService.getTicketById(id);
 
-        ticketRepository.delete(ticket);
+        ticketService.deleteTicket(id);
         
         redirectAttributes.addFlashAttribute("message", String.format("%s è stato eliminato", ticket.getTitolo()));
         redirectAttributes.addFlashAttribute("messageClass", "alert-danger");
         return "redirect:/tickets";
+    }
+
+    @PostMapping("/tickets/{ticketId}/add-nota")
+    public String addNota(@PathVariable Integer ticketId, @RequestParam String contenuto){
+        ticketService.addNota(ticketId, contenuto);
+        return "redirect:/tickets/show/" + ticketId;
     }
 }
