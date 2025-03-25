@@ -11,7 +11,6 @@ import org.java.milestone.spring.ticket_platform.repository.OperatoreRepository;
 import org.java.milestone.spring.ticket_platform.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,10 +18,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 
@@ -122,6 +121,17 @@ public class TicketController {
         editTicket.setStato(formTicket.getStato());;
 
         ticketRepository.save(editTicket);
+        return "redirect:/tickets";
+    }
+
+    @PostMapping("delete/{id}")
+    public String delete(@PathVariable Integer id, RedirectAttributes redirectAttributes){
+        Ticket ticket = ticketRepository.findById(id).get();
+
+        ticketRepository.delete(ticket);
+        
+        redirectAttributes.addFlashAttribute("message", String.format("%s è stato eliminato", ticket.getTitolo()));
+        redirectAttributes.addFlashAttribute("messageClass", "alert-danger");
         return "redirect:/tickets";
     }
 }
