@@ -50,11 +50,14 @@
                 <a th:href="@{/tickets/{id}(id=${ticket.id})}" class="btn btn-primary">Dettagli</a>
               </td>
               <td>
-                <a th:href="@{/tickets/edit/{id}(id=${ticket.id})}" class="btn btn-warning">Modifica</a>
+                <a th:href="@{/tickets/edit/{id}(id=${ticket.id})}" class="btn btn-warning" sec:authorize="hasAuthority('ADMIN')">Modifica</a>
+              </td>
+              <td>
+                <a th:href="@{/tickets/edit/{id}(id=${ticket.id})}" class="btn btn-secondary" sec:authorize="hasAuthority('ADMIN')">Aggiungi Nota</a>
               </td>
               <td>
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                  th:data-bs-target="'#delete-modal-' + ${ticket.id}">
+                  th:data-bs-target="'#delete-modal-' + ${ticket.id}" sec:authorize="hasAuthority('ADMIN')">
                   Elimina
                 </button>
 

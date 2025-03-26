@@ -83,6 +83,6 @@ public class Operatore {
 
     @Override
     public String toString(){
-        return String.format("nome: %s, cognome: %s, id: %s", this.nome, this.cognome, this.id);
+        return String.format("%s %s, id: %s", this.nome, this.cognome, this.id);
     }
 }

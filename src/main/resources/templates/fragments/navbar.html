@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <body>
     <!-- navbar fragment -->
     <nav th:fragment="navbar(current)"
@@ -18,6 +19,11 @@
                             th:href="@{/tickets}" th:classAppend="${current == 'tickets'} ? active : not-active">Tickets</a>
                     </li>
                 </ul>
+                <div class="user-info">
+                    Logged user: <span sec:authentication="name" class="fw-bold me-2"></span>
+                    Roles: <span sec:authentication="principal.authorities" class="fst-italic me-2"></span>
+                    <a class="btn btn-sm btn-outline-primary" href="/logout">Sing out</a>
+                </div>
             </div>
         </div>
     </nav>

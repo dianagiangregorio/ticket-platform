@@ -1,5 +1,6 @@
 package org.java.milestone.spring.ticket_platform.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.java.milestone.spring.ticket_platform.repository.CategoriaRepository;
 import org.java.milestone.spring.ticket_platform.repository.OperatoreRepository;
 import org.java.milestone.spring.ticket_platform.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -133,9 +135,9 @@ public class TicketController {
         return "redirect:/tickets";
     }
 
-    @PostMapping("/tickets/{ticketId}/add-nota")
-    public String addNota(@PathVariable Integer ticketId, @RequestParam String contenuto){
-        ticketService.addNota(ticketId, contenuto);
-        return "redirect:/tickets/show/" + ticketId;
+    @PostMapping("/add-nota/{ticketId}")
+    public String addNota(@PathVariable Integer ticketId, @RequestParam String contenuto, Principal principal){
+        ticketService.addNota(ticketId, contenuto, principal);
+        return "tickets/create-or-edit";
     }
 }

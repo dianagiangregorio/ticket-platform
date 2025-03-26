@@ -33,7 +33,7 @@
                         </ul>
                     </div>
                     <div>
-                        <form th:action="@{/tickets/{ticketId}/add-nota(id=${ticket.id})}" method="post">
+                        <form th:action="@{/tickets/add-nota/{ticketId}(ticketId=${ticket.id})}" method="post">
                             <textarea name="contenuto" id="contenuto" placeholder="Aggiungi una nota..."></textarea>
                             <button type="submit">Aggiungi nota</button>
                         </form>

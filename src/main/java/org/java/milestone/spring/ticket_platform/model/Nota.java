@@ -32,6 +32,18 @@ public class Nota {
     @JoinColumn(name = "ticket_id", nullable = false)
     private Ticket ticket;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User autore;
+
+    public User getAutore() {
+        return this.autore;
+    }
+
+    public void setAutore(User autore) {
+        this.autore = autore;
+    }
+
     public Integer getId() {
         return this.id;
     }
