@@ -7,11 +7,13 @@ import java.util.List;
 import org.java.milestone.spring.ticket_platform.model.Categoria;
 import org.java.milestone.spring.ticket_platform.model.Operatore;
 import org.java.milestone.spring.ticket_platform.model.Ticket;
+import org.java.milestone.spring.ticket_platform.model.User;
 import org.java.milestone.spring.ticket_platform.repository.CategoriaRepository;
 import org.java.milestone.spring.ticket_platform.repository.OperatoreRepository;
+import org.java.milestone.spring.ticket_platform.repository.TicketRepository;
 import org.java.milestone.spring.ticket_platform.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,6 +31,8 @@ import jakarta.validation.Valid;
 @RequestMapping("/tickets")
 public class TicketController {
 
+    private final TicketRepository ticketRepository;
+
     @Autowired
     private TicketService ticketService;
 
@@ -38,6 +42,10 @@ public class TicketController {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
+    TicketController(TicketRepository ticketRepository) {
+        this.ticketRepository = ticketRepository;
+    }
+
     @GetMapping
     public String index(Model model) {
         List<Ticket> tickets = ticketService.getAllTickets();
@@ -45,11 +53,27 @@ public class TicketController {
         return "tickets/index";
     }
 
+    @GetMapping
+    public String getTickets(Model model, @AuthenticationPrincipal User user){
+        if (user != null) {
+            String email = user.getUsername(); 
+            Operatore operatore = operatoreRepository.findByEmail(email);
+            List<Ticket> tickets;
+            if (operatore != null) {
+                tickets = ticketRepository.findByOperatore(operatore);
+            } 
+            tickets = ticketRepository.findAll();
+            model.addAttribute("tickets", tickets);
+        }
+
+        return "tickets/index";
+    }
+
     @GetMapping("/{id}")
     public String show(@PathVariable Integer id, Model model) {
         Ticket ticket = ticketService.getTicketById(id);
         if (ticket.getNote() == null) {
-            ticket.setNote(new ArrayList<>());            
+            ticket.setNote(new ArrayList<>());
         }
         model.addAttribute("ticket", ticket);
         return "tickets/show";
@@ -104,7 +128,9 @@ public class TicketController {
     }
 
     @PostMapping("/edit/{id}")
-    public String edit(@PathVariable Integer id, @Valid @ModelAttribute("ticket") Ticket formTicket, @RequestParam("operatoreId") Integer operatoreId, @RequestParam("categoriaId") Integer categoriaId, BindingResult bindingResult, Model model){
+    public String edit(@PathVariable Integer id, @Valid @ModelAttribute("ticket") Ticket formTicket,
+            @RequestParam("operatoreId") Integer operatoreId, @RequestParam("categoriaId") Integer categoriaId,
+            BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("operatori", operatoreRepository.findAll());
             model.addAttribute("categorie", categoriaRepository.findAll());
@@ -118,25 +144,26 @@ public class TicketController {
         editTicket.setCategoria(categoria);
         editTicket.setTitolo(formTicket.getTitolo());
         editTicket.setContenuto(formTicket.getContenuto());
-        editTicket.setStato(formTicket.getStato());;
+        editTicket.setStato(formTicket.getStato());
+        ;
 
         ticketService.editTicket(editTicket);
         return "redirect:/tickets";
     }
 
     @PostMapping("delete/{id}")
-    public String delete(@PathVariable Integer id, RedirectAttributes redirectAttributes){
+    public String delete(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         Ticket ticket = ticketService.getTicketById(id);
 
         ticketService.deleteTicket(id);
-        
+
         redirectAttributes.addFlashAttribute("message", String.format("%s è stato eliminato", ticket.getTitolo()));
         redirectAttributes.addFlashAttribute("messageClass", "alert-danger");
         return "redirect:/tickets";
     }
 
     @PostMapping("/add-nota/{ticketId}")
-    public String addNota(@PathVariable Integer ticketId, @RequestParam String contenuto, Principal principal){
+    public String addNota(@PathVariable Integer ticketId, @RequestParam String contenuto, Principal principal) {
         ticketService.addNota(ticketId, contenuto, principal);
         return "tickets/create-or-edit";
     }
